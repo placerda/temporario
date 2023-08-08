@@ -5,16 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "9823948676434098636"
+      "templateHash": "12297847323320756086"
     }
   },
   "parameters": {
     "environmentName": {
       "type": "string",
+      "defaultValue": "dev",
       "minLength": 1,
       "maxLength": 64,
       "metadata": {
-        "description": "Name of the the azd environment. azd uses this name to find resources from azure."
+        "description": "Environment name used as a tag for all resources"
       }
     },
     "location": {
@@ -28,11 +29,12 @@
       "type": "string"
     },
     "servicesNameSufix": {
-      "type": "string"
-    },
-    "searchServiceSkuName": {
       "type": "string",
-      "defaultValue": "standard"
+      "minLength": 1,
+      "maxLength": 4,
+      "metadata": {
+        "description": "Prefix for all resources names. Must be 4 characters or less. Example: 0610"
+      }
     },
     "chatGptDeploymentName": {
       "type": "string",
@@ -40,11 +42,21 @@
     },
     "chatGptDeploymentCapacity": {
       "type": "int",
-      "defaultValue": 2
+      "defaultValue": 2,
+      "minValue": 1,
+      "maxValue": 20,
+      "metadata": {
+        "description": "GPT model tokens per Minute Rate Limit (thousands).\nDefault quota per model and region: gpt-4: 20K; gpt-4-32K: 60K; All others: 240K"
+      }
     },
     "chatGptModelName": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo-16k"
+      "defaultValue": "gpt-35-turbo-16k",
+      "allowedValues": [
+        "gpt-35-turbo-16k",
+        "gpt-4",
+        "gpt-4-32k"
+      ]
     },
     "embeddingsDeploymentName": {
       "type": "string",
@@ -52,18 +64,19 @@
     },
     "embeddingsDeploymentCapacity": {
       "type": "int",
-      "defaultValue": 10
+      "defaultValue": 10,
+      "minValue": 1,
+      "maxValue": 240,
+      "metadata": {
+        "description": "Embeddings model tokens per Minute Rate Limit (thousands).\nDefault quota per model and region: 240K"
+      }
     },
     "embeddingsModelName": {
       "type": "string",
-      "defaultValue": "text-embedding-ada-002"
-    },
-    "principalId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Id of the user or app to assign application roles"
-      }
+      "defaultValue": "text-embedding-ada-002",
+      "allowedValues": [
+        "text-embedding-ada-002"
+      ]
     }
   },
   "variables": {
@@ -76,7 +89,9 @@
     "orchestratorFunctionsName": "[format('fnorc{0}', parameters('servicesNameSufix'))]",
     "dataIngestionFunctionsName": "[format('fning{0}', parameters('servicesNameSufix'))]",
     "searchServiceName": "[format('search{0}', parameters('servicesNameSufix'))]",
+    "searchServiceSkuName": "standard",
     "openAiServiceName": "[format('oai{0}', parameters('servicesNameSufix'))]",
+    "principalId": "",
     "tags": {
       "azd-env-name": "[parameters('environmentName')]"
     }
