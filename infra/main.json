@@ -5,30 +5,29 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "18415279749953897077"
+      "templateHash": "13512491349955628944"
     }
   },
   "parameters": {
+    "resourceGroupName": {
+      "type": "string"
+    },
+    "servicesNameSufix": {
+      "type": "string",
+      "defaultValue": "[substring(uniqueString(subscription().id), 0, 5)]",
+      "minLength": 1,
+      "maxLength": 5,
+      "metadata": {
+        "description": "Prefix for all resources names. Must be 4 characters or less. Example: 0610."
+      }
+    },
     "environmentName": {
       "type": "string",
       "defaultValue": "dev",
       "minLength": 1,
       "maxLength": 64,
       "metadata": {
-        "description": "Environment name used as a tag for all resources"
-      }
-    },
-    "chatGptDeploymentName": {
-      "type": "string",
-      "defaultValue": "chat"
-    },
-    "chatGptDeploymentCapacity": {
-      "type": "int",
-      "defaultValue": 2,
-      "minValue": 1,
-      "maxValue": 20,
-      "metadata": {
-        "description": "GPT model tokens per Minute Rate Limit (thousands). Default quota per model and region: gpt-4: 20; gpt-4-32: 60; All others: 240"
+        "description": "Environment name used as a tag for all resources."
       }
     },
     "chatGptModelName": {
@@ -38,11 +37,43 @@
         "gpt-35-turbo-16k",
         "gpt-4",
         "gpt-4-32k"
-      ]
+      ],
+      "metadata": {
+        "description": "GPT model used to answer user questions. Don't forget to check region availability."
+      }
+    },
+    "chatGptDeploymentName": {
+      "type": "string",
+      "defaultValue": "chat",
+      "metadata": {
+        "description": "GPT model deployment name."
+      }
+    },
+    "chatGptDeploymentCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1,
+      "maxValue": 20,
+      "metadata": {
+        "description": "GPT model tokens per Minute Rate Limit (thousands). Default quota per model and region: gpt-4: 20; gpt-4-32: 60; All others: 240."
+      }
+    },
+    "embeddingsModelName": {
+      "type": "string",
+      "defaultValue": "text-embedding-ada-002",
+      "allowedValues": [
+        "text-embedding-ada-002"
+      ],
+      "metadata": {
+        "description": "Embeddings model used to generate vector embeddings. Don't forget to check region availability."
+      }
     },
     "embeddingsDeploymentName": {
       "type": "string",
-      "defaultValue": "text-embedding-ada-002"
+      "defaultValue": "text-embedding-ada-002",
+      "metadata": {
+        "description": "Embeddings model deployment name."
+      }
     },
     "embeddingsDeploymentCapacity": {
       "type": "int",
@@ -53,13 +84,6 @@
         "description": "Embeddings model tokens per Minute Rate Limit (thousands). Default quota per model and region: 240"
       }
     },
-    "embeddingsModelName": {
-      "type": "string",
-      "defaultValue": "text-embedding-ada-002",
-      "allowedValues": [
-        "text-embedding-ada-002"
-      ]
-    },
     "openaiApiVersion": {
       "type": "string",
       "defaultValue": "2023-05-15"
@@ -68,9 +92,57 @@
       "type": "string",
       "defaultValue": "en.microsoft",
       "allowedValues": [
+        "ar.microsoft",
+        "bn.microsoft",
+        "bg.microsoft",
+        "ca.microsoft",
+        "zh-Hans.microsoft",
+        "zh-Hant.microsoft",
+        "hr.microsoft",
+        "cs.microsoft",
+        "da.microsoft",
+        "nl.microsoft",
         "en.microsoft",
+        "et.microsoft",
+        "fi.microsoft",
+        "fr.microsoft",
+        "de.microsoft",
+        "el.microsoft",
+        "gu.microsoft",
+        "he.microsoft",
+        "hi.microsoft",
+        "hu.microsoft",
+        "is.microsoft",
+        "id.microsoft",
+        "it.microsoft",
+        "ja.microsoft",
+        "kn.microsoft",
+        "ko.microsoft",
+        "lv.microsoft",
+        "lt.microsoft",
+        "ml.microsoft",
+        "ms.microsoft",
+        "mr.microsoft",
+        "nb.microsoft",
+        "pl.microsoft",
         "pt-Br.microsoft",
-        "es.microsoft"
+        "pt-Pt.microsoft",
+        "pa.microsoft",
+        "ro.microsoft",
+        "ru.microsoft",
+        "sr-cyrillic.microsoft",
+        "sr-latin.microsoft",
+        "sk.microsoft",
+        "sl.microsoft",
+        "es.microsoft",
+        "sv.microsoft",
+        "ta.microsoft",
+        "te.microsoft",
+        "th.microsoft",
+        "tr.microsoft",
+        "uk.microsoft",
+        "ur.microsoft",
+        "vi.microsoft"
       ]
     },
     "retrievalApproach": {
@@ -86,53 +158,229 @@
       "type": "string",
       "defaultValue": "en-US",
       "allowedValues": [
+        "af-ZA",
+        "am-ET",
+        "ar-AE",
+        "ar-BH",
+        "ar-DZ",
+        "ar-EG",
+        "ar-IL",
+        "ar-IQ",
+        "ar-JO",
+        "ar-KW",
+        "ar-LB",
+        "ar-LY",
+        "ar-MA",
+        "ar-OM",
+        "ar-PS",
+        "ar-QA",
+        "ar-SA",
+        "ar-SY",
+        "ar-TN",
+        "ar-YE",
+        "az-AZ",
+        "bg-BG",
+        "bn-IN",
+        "bs-BA",
+        "ca-ES",
+        "cs-CZ",
+        "cy-GB",
+        "da-DK",
+        "de-AT",
+        "de-CH",
+        "de-DE",
+        "el-GR",
+        "en-AU",
+        "en-CA",
+        "en-GB",
+        "en-GH",
+        "en-HK",
+        "en-IE",
+        "en-IN",
+        "en-KE",
+        "en-NG",
+        "en-NZ",
+        "en-PH",
+        "en-SG",
+        "en-TZ",
         "en-US",
+        "en-ZA",
+        "es-AR",
+        "es-BO",
+        "es-CL",
+        "es-CO",
+        "es-CR",
+        "es-CU",
+        "es-DO",
+        "es-EC",
+        "es-ES",
+        "es-GQ",
+        "es-GT",
+        "es-HN",
+        "es-MX",
+        "es-NI",
+        "es-PA",
+        "es-PE",
+        "es-PR",
+        "es-PY",
+        "es-SV",
+        "es-US",
+        "es-UY",
+        "es-VE",
+        "et-EE",
+        "eu-ES",
+        "fa-IR",
+        "fi-FI",
+        "fil-PH",
+        "fr-BE",
+        "fr-CA",
+        "fr-CH",
+        "fr-FR",
+        "ga-IE",
+        "gl-ES",
+        "gu-IN",
+        "he-IL",
+        "hi-IN",
+        "hr-HR",
+        "hu-HU",
+        "hy-AM",
+        "id-ID",
+        "is-IS",
+        "it-CH",
+        "it-IT",
+        "ja-JP",
+        "jv-ID",
+        "ka-GE",
+        "kk-KZ",
+        "km-KH",
+        "kn-IN",
+        "ko-KR",
+        "lo-LA",
+        "lt-LT",
+        "lv-LV",
+        "mk-MK",
+        "ml-IN",
+        "mn-MN",
+        "mr-IN",
+        "ms-MY",
+        "mt-MT",
+        "my-MM",
+        "nb-NO",
+        "ne-NP",
+        "nl-BE",
+        "nl-NL",
+        "pl-PL",
+        "ps-AF",
         "pt-BR",
-        "es-ES"
-      ]
+        "pt-PT",
+        "ro-RO",
+        "ru-RU",
+        "si-LK",
+        "sk-SK",
+        "sl-SI",
+        "so-SO",
+        "sq-AL",
+        "sr-RS",
+        "sv-SE",
+        "sw-KE",
+        "sw-TZ",
+        "ta-IN",
+        "te-IN",
+        "th-TH",
+        "tr-TR",
+        "uk-UA",
+        "uz-UZ",
+        "vi-VN",
+        "wuu-CN",
+        "yue-CN",
+        "zh-CN",
+        "zh-CN-shandong",
+        "zh-CN-sichuan",
+        "zh-HK",
+        "zh-TW",
+        "zu-ZA"
+      ],
+      "metadata": {
+        "description": "Language used for speech recognition in the frontend."
+      }
     },
     "speechSynthesisLanguage": {
       "type": "string",
       "defaultValue": "en-US",
       "allowedValues": [
+        "ar-EG",
+        "ar-SA",
+        "ca-ES",
+        "cs-CZ",
+        "da-DK",
+        "de-AT",
+        "de-CH",
+        "de-DE",
+        "en-AU",
+        "en-CA",
+        "en-GB",
+        "en-HK",
+        "en-IE",
+        "en-IN",
         "en-US",
+        "es-ES",
+        "es-MX",
+        "fi-FI",
+        "fr-BE",
+        "fr-CA",
+        "fr-CH",
+        "fr-FR",
+        "hi-IN",
+        "hu-HU",
+        "id-ID",
+        "it-IT",
+        "ja-JP",
+        "ko-KR",
+        "nb-NO",
+        "nl-BE",
+        "nl-NL",
+        "pl-PL",
         "pt-BR",
-        "es-MX"
-      ]
+        "pt-PT",
+        "ru-RU",
+        "sv-SE",
+        "th-TH",
+        "tr-TR",
+        "zh-CN",
+        "zh-HK",
+        "zh-TW"
+      ],
+      "metadata": {
+        "description": "Language used for speech synthesis in the frontend."
+      }
     },
     "speechSynthesisVoiceName": {
       "type": "string",
-      "defaultValue": "en-US-JennyMultilingualNeural",
+      "defaultValue": "en-US-RyanMultilingualNeural",
       "allowedValues": [
-        "en-US-JennyMultilingualNeural",
+        "en-US-RyanMultilingualNeural",
+        "es-MX-BeatrizNeural",
         "pt-BR-FranciscaNeural",
-        "es-MX-BeatrizNeural"
-      ]
+        "de-DE-AmalaNeural",
+        "fr-FR-DeniseNeural"
+      ],
+      "metadata": {
+        "description": "Voice used for speech synthesis in the frontend."
+      }
     },
     "location": {
       "type": "string",
       "defaultValue": "[deployment().location]",
       "minLength": 1,
       "metadata": {
-        "description": "Primary location for all resources"
-      }
-    },
-    "resourceGroupName": {
-      "type": "string"
-    },
-    "servicesNameSufix": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 4,
-      "metadata": {
-        "description": "Prefix for all resources names. Must be 4 characters or less. Example: 0610"
+        "description": "Primary location for all resources. No need to change since it will inherit the resource group location."
       }
     },
     "principalId": {
       "type": "string",
       "defaultValue": "none",
       "metadata": {
-        "description": "Id of the user or app to assign keyvault access (optional)"
+        "description": "Id of the user or app to assign keyvault access (optional). Keep it none if you don't want add any principal."
       }
     }
   },
